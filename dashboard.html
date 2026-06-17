@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carnet de course — Vianney</title>
+<style>
+  :root {
+    --paper: #efede6;
+    --paper-2: #e6e2d8;
+    --ink: #1f2d27;
+    --pine: #3d5c4a;
+    --pine-soft: #5e7c6a;
+    --ember: #d87b3e;
+    --stone: #8a8980;
+    --line: rgba(31, 45, 39, 0.14);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "JetBrains Mono", "SF Mono", "Roboto Mono", monospace;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  @font-face {
+    font-family: "Display Cond";
+    src: local("Oswald"), local("Arial Narrow");
+  }
+
+  .display {
+    font-family: "Oswald", "Arial Narrow", sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+  }
+
+  a { color: inherit; }
+
+  /* ===== Layout shell ===== */
+  .page {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 20px 64px;
+  }
+
+  /* ===== Elevation strip (signature) ===== */
+  .elevation-strip {
+    width: 100%;
+    height: 88px;
+    background: var(--pine);
+    position: relative;
+    overflow: hidden;
+  }
+  .elevation-strip svg { display: block; width: 100%; height: 100%; }
+  .elevation-strip .fill { fill: rgba(239, 237, 230, 0.16); }
+  .elevation-strip .line { fill: none; stroke: var(--ember); stroke-width: 2; }
+  .elevation-strip .label {
+    position: absolute;
+    top: 10px; left: 20px;
+    color: var(--paper);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    opacity: 0.75;
+  }
+
+  /* ===== Header ===== */
+  header.masthead {
+    padding: 28px 0 24px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  header.masthead h1 {
+    margin: 0;
+    font-size: clamp(28px, 5vw, 44px);
+    line-height: 1;
+  }
+  header.masthead .sub {
+    color: var(--stone);
+    font-size: 13px;
+    margin-top: 6px;
+  }
+  .timestamp {
+    text-align: right;
+    font-size: 12px;
+    color: var(--stone);
+    line-height: 1.6;
+  }
+  .timestamp .live-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--ember);
+    margin-right: 6px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+
+  /* ===== Stat grid ===== */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    border: 1px solid var(--line);
+    border-top: none;
+    margin-bottom: 40px;
+  }
+  .stat {
+    padding: 22px 20px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .stat:last-child { border-right: none; }
+  .stat .eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--stone);
+    margin-bottom: 8px;
+  }
+  .stat .value {
+    font-size: clamp(26px, 4vw, 38px);
+    line-height: 1;
+  }
+  .stat .value .unit {
+    font-size: 14px;
+    color: var(--pine-soft);
+    margin-left: 4px;
+    text-transform: none;
+    font-family: inherit;
+  }
+
+  /* ===== Section headers ===== */
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin: 0 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .section-head h2 {
+    margin: 0;
+    font-size: 18px;
+    letter-spacing: 0.05em;
+  }
+  .section-head .count {
+    font-size: 12px;
+    color: var(--stone);
+  }
+  section { margin-bottom: 48px; }
+
+  /* ===== Upcoming workouts ===== */
+  .workouts {
+    display: grid;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .workout {
+    background: var(--paper);
+    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: 90px 1fr auto;
+    gap: 16px;
+    align-items: center;
+  }
+  .workout .date {
+    font-size: 12px;
+    color: var(--pine);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .workout .date .weekday {
+    display: block;
+    font-size: 10px;
+    color: var(--stone);
+    margin-top: 2px;
+  }
+  .workout .title { font-size: 15px; }
+  .workout .desc { font-size: 12px; color: var(--stone); margin-top: 3px; }
+  .workout .dist {
+    font-size: 13px;
+    color: var(--ember);
+    text-align: right;
+    white-space: nowrap;
+  }
+  .empty {
+    padding: 28px 20px;
+    color: var(--stone);
+    font-size: 13px;
+    border: 1px dashed var(--line);
+    text-align: center;
+  }
+
+  /* ===== Activity log ===== */
+  .log { border: 1px solid var(--line); }
+  .log-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 90px 80px 70px 70px;
+    gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line);
+    font-size: 13px;
+    align-items: center;
+  }
+  .log-row:last-child { border-bottom: none; }
+  .log-row.head {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--stone);
+    text-transform: uppercase;
+    background: var(--paper-2);
+  }
+  .log-row .name {
+    font-family: "Oswald", sans-serif;
+    text-transform: none;
+    letter-spacing: normal;
+    font-weight: 500;
+  }
+  .log-row .badge {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 9px;
+    padding: 2px 6px;
+    background: var(--ember);
+    color: var(--paper);
+    border-radius: 2px;
+    letter-spacing: 0.08em;
+    vertical-align: middle;
+  }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .log-row .date-cell { color: var(--stone); font-size: 12px; }
+
+  @media (max-width: 680px) {
+    .log-row {
+      grid-template-columns: 1fr 70px;
+      grid-template-areas:
+        "name name"
+        "date pace"
+        "dist elev";
+      row-gap: 4px;
+    }
+    .log-row .date-cell { grid-area: date; }
+    .log-row .name { grid-area: name; }
+    .log-row .pace { grid-area: pace; }
+    .log-row .dist { grid-area: dist; }
+    .log-row .elev { grid-area: elev; }
+    .log-row.head { display: none; }
+    .log-row .col-hr { display: none; }
+
+    .workout {
+      grid-template-columns: 1fr auto;
+      grid-template-areas:
+        "date dist"
+        "main main";
+      row-gap: 8px;
+    }
+    .workout .date { grid-area: date; }
+    .workout .dist { grid-area: dist; }
+    .workout > div:nth-child(2) { grid-area: main; }
+  }
+
+  footer {
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 11px;
+    color: var(--stone);
+    text-align: center;
+  }
+
+  .error-banner {
+    background: #f4d9c6;
+    color: #6b3a14;
+    border: 1px solid var(--ember);
+    padding: 14px 18px;
+    font-size: 13px;
+    margin: 24px 0;
+  }
+</style>
+</head>
+<body>
+
+  <div class="elevation-strip">
+    <div class="label">PROFIL — 4 DERNIÈRES SEMAINES</div>
+    <svg id="elevationSvg" viewBox="0 0 1000 88" preserveAspectRatio="none"></svg>
+  </div>
+
+  <div class="page">
+
+    <header class="masthead">
+      <div>
+        <h1 class="display" id="athleteName">Carnet de course</h1>
+        <div class="sub" id="athleteLocation">—</div>
+      </div>
+      <div class="timestamp">
+        <div><span class="live-dot"></span>Mise à jour automatique</div>
+        <div id="generatedAt">—</div>
+      </div>
+    </header>
+
+    <div id="errorBanner" class="error-banner" style="display:none;">
+      Impossible de charger <code>data.json</code>. Vérifie que le fichier est bien présent
+      à côté de ce dashboard et que le script <code>update_dashboard.py</code> tourne
+      régulièrement.
+    </div>
+
+    <div class="stats" id="statsGrid"></div>
+
+    <section>
+      <div class="section-head">
+        <h2 class="display">Prochaines séances</h2>
+        <span class="count" id="workoutsCount"></span>
+      </div>
+      <div class="workouts" id="workoutsList"></div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2 class="display">Dernières sorties</h2>
+        <span class="count" id="runsCount"></span>
+      </div>
+      <div class="log" id="runsLog"></div>
+    </section>
+
+    <footer>
+      Données Strava — généré par <code>update_dashboard.py</code> ·
+      Rafraîchi automatiquement toutes les <span id="refreshMins">5</span> minutes
+    </footer>
+
+  </div>
+
+<script>
+  // ============================================================
+  // CONFIGURATION
+  // ============================================================
+  const DATA_URL = "data.json";          // chemin vers le fichier généré par le script Python
+  const REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+
+  document.getElementById("refreshMins").textContent = Math.round(REFRESH_INTERVAL_MS / 60000);
+
+  // ============================================================
+  // HELPERS
+  // ============================================================
+  const WEEKDAYS = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
+  const MONTHS = ["jan", "fév", "mar", "avr", "mai", "jun", "jul", "aoû", "sep", "oct", "nov", "déc"];
+
+  function fmtDate(iso) {
+    const d = new Date(iso);
+    return `${d.getDate()} ${MONTHS[d.getMonth()]}`;
+  }
+  function fmtWeekday(iso) {
+    return WEEKDAYS[new Date(iso).getDay()];
+  }
+  function fmtDuration(seconds) {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.round((seconds % 3600) / 60);
+    if (h > 0) return `${h}h${String(m).padStart(2, "0")}`;
+    return `${m} min`;
+  }
+  function fmtRelativeTimestamp(iso) {
+    const d = new Date(iso);
+    return d.toLocaleString("fr-FR", {
+      day: "2-digit", month: "2-digit", year: "numeric",
+      hour: "2-digit", minute: "2-digit"
+    });
+  }
+
+  // ============================================================
+  // RENDER: stat grid
+  // ============================================================
+  function renderStats(data) {
+    const s = data.stats;
+    const grid = document.getElementById("statsGrid");
+    const items = [
+      { eyebrow: "DISTANCE 4 SEM.", value: s.last_4_weeks.distance_km, unit: "km" },
+      { eyebrow: "SORTIES 4 SEM.", value: s.last_4_weeks.runs, unit: "" },
+      { eyebrow: "D+ 4 SEM.", value: s.last_4_weeks.elevation_gain_m, unit: "m" },
+      { eyebrow: "DISTANCE ANNÉE", value: s.ytd.distance_km, unit: "km" },
+      { eyebrow: "SORTIES ANNÉE", value: s.ytd.runs, unit: "" },
+      { eyebrow: "PLUS LONGUE", value: s.biggest_run_km, unit: "km" },
+    ];
+    grid.innerHTML = items.map(it => `
+      <div class="stat">
+        <div class="eyebrow">${it.eyebrow}</div>
+        <div class="value display">${it.value}${it.unit ? `<span class="unit">${it.unit}</span>` : ""}</div>
+      </div>
+    `).join("");
+  }
+
+  // ============================================================
+  // RENDER: upcoming workouts
+  // ============================================================
+  function renderWorkouts(workouts) {
+    const list = document.getElementById("workoutsList");
+    const count = document.getElementById("workoutsCount");
+    count.textContent = workouts && workouts.length ? `${workouts.length} programmées` : "";
+
+    if (!workouts || workouts.length === 0) {
+      list.innerHTML = `<div class="empty">Aucune séance programmée pour le moment.</div>`;
+      return;
+    }
+
+    list.innerHTML = workouts.map(w => `
+      <div class="workout">
+        <div class="date">
+          ${w.date ? fmtDate(w.date) : "—"}
+          <span class="weekday">${w.date ? fmtWeekday(w.date) : ""}</span>
+        </div>
+        <div>
+          <div class="title display">${escapeHtml(w.title)}</div>
+          ${w.description ? `<div class="desc">${escapeHtml(w.description)}</div>` : ""}
+        </div>
+        <div class="dist">${w.target_distance_km ? `${w.target_distance_km} km` : ""}</div>
+      </div>
+    `).join("");
+  }
+
+  // ============================================================
+  // RENDER: activity log
+  // ============================================================
+  function renderRuns(runs) {
+    const log = document.getElementById("runsLog");
+    const count = document.getElementById("runsCount");
+    count.textContent = runs && runs.length ? `${runs.length} affichées` : "";
+
+    if (!runs || runs.length === 0) {
+      log.innerHTML = `<div class="empty">Aucune sortie récente trouvée.</div>`;
+      return;
+    }
+
+    const header = `
+      <div class="log-row head">
+        <div>Date</div>
+        <div>Sortie</div>
+        <div class="num">Dist.</div>
+        <div class="num">Durée</div>
+        <div class="num pace">Allure</div>
+        <div class="num col-hr">FC moy.</div>
+      </div>`;
+
+    const rows = runs.map(r => `
+      <div class="log-row">
+        <div class="date-cell">${fmtDate(r.date)} · ${fmtWeekday(r.date)}</div>
+        <div class="name">
+          ${escapeHtml(r.name)}
+          ${r.pr_count > 0 ? `<span class="badge">PR ×${r.pr_count}</span>` : ""}
+        </div>
+        <div class="num dist">${r.distance_km} km</div>
+        <div class="num elev">${fmtDuration(r.moving_time_s)}</div>
+        <div class="num pace">${r.avg_pace ? r.avg_pace + "/km" : "—"}</div>
+        <div class="num col-hr">${r.avg_hr ? Math.round(r.avg_hr) + " bpm" : "—"}</div>
+      </div>
+    `).join("");
+
+    log.innerHTML = header + rows;
+  }
+
+  // ============================================================
+  // RENDER: elevation strip (signature element)
+  // ============================================================
+  function renderElevationStrip(runs) {
+    const svg = document.getElementById("elevationSvg");
+    if (!runs || runs.length === 0) {
+      svg.innerHTML = "";
+      return;
+    }
+    // Ordonner du plus ancien au plus récent et accumuler le D+
+    const ordered = [...runs].slice().reverse();
+    let cumulative = 0;
+    const points = ordered.map(r => {
+      cumulative += (r.elevation_gain_m || 0);
+      return cumulative;
+    });
+    const max = Math.max(...points, 1);
+    const W = 1000, H = 88, pad = 6;
+    const stepX = points.length > 1 ? (W / (points.length - 1)) : W;
+
+    const coords = points.map((v, i) => {
+      const x = i * stepX;
+      const y = H - pad - (v / max) * (H - pad * 2);
+      return [x, y];
+    });
+
+    const linePath = coords.map((p, i) => (i === 0 ? `M${p[0]},${p[1]}` : `L${p[0]},${p[1]}`)).join(" ");
+    const fillPath = `${linePath} L${W},${H} L0,${H} Z`;
+
+    svg.innerHTML = `
+      <path class="fill" d="${fillPath}"></path>
+      <path class="line" d="${linePath}"></path>
+    `;
+  }
+
+  // ============================================================
+  // ESCAPING
+  // ============================================================
+  function escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str ?? "";
+    return div.innerHTML;
+  }
+
+  // ============================================================
+  // MAIN LOAD
+  // ============================================================
+  async function loadData() {
+    try {
+      const res = await fetch(`${DATA_URL}?_=${Date.now()}`, { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      document.getElementById("errorBanner").style.display = "none";
+
+      const name = [data.athlete?.firstname, data.athlete?.lastname].filter(Boolean).join(" ");
+      document.getElementById("athleteName").textContent = name ? `Carnet de course — ${name}` : "Carnet de course";
+
+      const loc = [data.athlete?.city, data.athlete?.country].filter(Boolean).join(", ");
+      document.getElementById("athleteLocation").textContent = loc || "";
+
+      document.getElementById("generatedAt").textContent =
+        "Données du " + fmtRelativeTimestamp(data.generated_at);
+
+      renderStats(data);
+      renderWorkouts(data.upcoming_workouts);
+      renderRuns(data.recent_runs);
+      renderElevationStrip(data.recent_runs);
+    } catch (err) {
+      console.error("Erreur de chargement data.json :", err);
+      document.getElementById("errorBanner").style.display = "block";
+    }
+  }
+
+  loadData();
+  setInterval(loadData, REFRESH_INTERVAL_MS);
+</script>
+
+</body>
+</html>

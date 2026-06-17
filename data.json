@@ -1,0 +1,136 @@
+{
+  "generated_at": "2026-06-15T06:30:00+00:00",
+  "athlete": {
+    "firstname": "Vianney",
+    "lastname": "K.",
+    "profile_picture": null,
+    "city": "Benfeld",
+    "country": "France"
+  },
+  "stats": {
+    "ytd": {
+      "runs": 58,
+      "distance_km": 412.6,
+      "elevation_gain_m": 3120,
+      "moving_time_s": 148800
+    },
+    "last_4_weeks": {
+      "runs": 9,
+      "distance_km": 64.2,
+      "elevation_gain_m": 410,
+      "moving_time_s": 23100
+    },
+    "all_time": {
+      "runs": 312,
+      "distance_km": 2480.0,
+      "elevation_gain_m": 18900
+    },
+    "biggest_run_km": 21.3
+  },
+  "zones": null,
+  "recent_runs": [
+    {
+      "id": 1,
+      "name": "Footing matinal",
+      "date": "2026-06-14T07:05:00Z",
+      "distance_km": 8.2,
+      "moving_time_s": 2640,
+      "elapsed_time_s": 2700,
+      "elevation_gain_m": 42,
+      "avg_pace": "5:23",
+      "avg_hr": 152,
+      "max_hr": 171,
+      "avg_speed_kmh": 11.2,
+      "kudos": 4,
+      "pr_count": 0,
+      "type": "Run"
+    },
+    {
+      "id": 2,
+      "name": "Sortie longue Ill",
+      "date": "2026-06-12T17:30:00Z",
+      "distance_km": 16.5,
+      "moving_time_s": 5700,
+      "elapsed_time_s": 5820,
+      "elevation_gain_m": 88,
+      "avg_pace": "5:45",
+      "avg_hr": 148,
+      "max_hr": 168,
+      "avg_speed_kmh": 10.4,
+      "kudos": 9,
+      "pr_count": 1,
+      "type": "Run"
+    },
+    {
+      "id": 3,
+      "name": "Fractionné 6x800m",
+      "date": "2026-06-10T18:00:00Z",
+      "distance_km": 9.0,
+      "moving_time_s": 2520,
+      "elapsed_time_s": 2580,
+      "elevation_gain_m": 12,
+      "avg_pace": "4:40",
+      "avg_hr": 168,
+      "max_hr": 184,
+      "avg_speed_kmh": 12.9,
+      "kudos": 6,
+      "pr_count": 2,
+      "type": "Run"
+    },
+    {
+      "id": 4,
+      "name": "Footing récup",
+      "date": "2026-06-08T07:10:00Z",
+      "distance_km": 6.1,
+      "moving_time_s": 2160,
+      "elapsed_time_s": 2200,
+      "elevation_gain_m": 20,
+      "avg_pace": "5:54",
+      "avg_hr": 138,
+      "max_hr": 152,
+      "avg_speed_kmh": 10.2,
+      "kudos": 3,
+      "pr_count": 0,
+      "type": "Run"
+    },
+    {
+      "id": 5,
+      "name": "Côtes Vosges",
+      "date": "2026-06-06T16:45:00Z",
+      "distance_km": 12.4,
+      "moving_time_s": 4380,
+      "elapsed_time_s": 4500,
+      "elevation_gain_m": 310,
+      "avg_pace": "5:53",
+      "avg_hr": 161,
+      "max_hr": 179,
+      "avg_speed_kmh": 10.2,
+      "kudos": 11,
+      "pr_count": 0,
+      "type": "TrailRun"
+    }
+  ],
+  "upcoming_workouts": [
+    {
+      "date": "2026-06-16",
+      "title": "Endurance fondamentale",
+      "description": "45 min allure facile, FC < 150",
+      "type": "Endurance",
+      "target_distance_km": 8
+    },
+    {
+      "date": "2026-06-18",
+      "title": "Fractionné 8x400m",
+      "description": "Récup 1min30 entre chaque, allure VMA",
+      "type": "Interval",
+      "target_distance_km": 9
+    },
+    {
+      "date": "2026-06-21",
+      "title": "Sortie longue",
+      "description": "18km allure marathon -10%",
+      "type": "Long Run",
+      "target_distance_km": 18
+    }
+  ]
+}
